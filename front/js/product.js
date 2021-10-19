@@ -14,12 +14,14 @@ fetch(`http://localhost:3000/api/products/107fb5b75607497b96722bda5b504926`)
 
     resultApi = data;
 
+    // mise en page de l'api avec le DOM
     titre.innerText = resultApi.name;
     prix.innerText = resultApi.price;
     image.innerHTML = `<img src="${resultApi.imageUrl}" alt="Photographie d'un canapé">`
     description.innerText = resultApi.description;
 
 
+    // boucle pour mettre en place les options de couleurs 
     for (let i = 0; i < resultApi.colors.length; i++) {
       let option = document.createElement("option");
       option.innerText = resultApi.colors[i];
