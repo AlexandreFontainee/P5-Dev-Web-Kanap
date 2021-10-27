@@ -56,10 +56,12 @@ function addToCart() {
     let addItem = {
 
       id: newUrl,
+      img: image,
       name: titre.textContent,
       price: prix.textContent,
       quantity: itemQty.value,
       color: colorSelect.value,
+      
     };
     console.log(addItem);
 
