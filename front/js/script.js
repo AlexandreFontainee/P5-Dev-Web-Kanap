@@ -8,22 +8,24 @@ fetch(`http://localhost:3000/api/products/`)
 
     // variable pour l'affichage du html
     let affichage = "";
-
+    let codeItem = data;
 
     // boucle pour avoir les éléments du tableau 
-    for (let i = 0; i < data.length; i++) {
+    codeItem.forEach((item )=> {
+      const { _id, imageUrl, name, description} = item;
+   
 
       affichage += `
 
-        <a href="./product.html?id=${data[i]._id}">
+        <a href="./product.html?id=${_id}">
             <article>
-              <img src="${data[i].imageUrl}" alt="Lorem ipsum dolor sit amet, Kanap name1">
-              <h3 class="productName">${data[i].name}</h3>
-              <p class="productDescription">${data[i].description}</p>
+              <img src="${imageUrl}" alt="Lorem ipsum dolor sit amet, Kanap name1">
+              <h3 class="productName">${name}</h3>
+              <p class="productDescription">${description}</p>
             </article>
           </a> `;
 
-    }
+        });
 
     document.getElementById("items").innerHTML = affichage;
 
