@@ -7,7 +7,7 @@ const newUrl = "http://localhost:3000/api/products/" + id;
 
 const colors = document.getElementById("colors");
 const itemQty = document.getElementById("quantity");
-
+const imageURL ="";
 
 // appel de l'api 
 
@@ -23,18 +23,23 @@ fetch(newUrl)
     const titre = document.querySelector('#title');
     const prix = document.querySelector('#price');
     const description = document.querySelector('#description');
-    const imageURL = resultApi.imageUrl;
+    const colors = document.getElementById('colors');
+    let imageURL = "";
+    let imageAlt = "";
 
     // mise en page de l'api avec le DOM
-    titre.innerText = resultApi.name;
-    prix.innerText = resultApi.price;
-    image.innerHTML = `<img src="${resultApi.imageUrl}" alt="Photographie d'un canapé">`
-    description.innerText = resultApi.description;
+    image.innerHTML = `<img src="${resultApi.imageUrl}" alt="${resultApi.altTxt}">`;
+    imageURL = resultApi.imageUrl;
+    imageAlt = resultApi.altTxt;
+    titre.innerHTML = `${resultApi.name};` 
+    prix.innerText = `${resultApi.price}`;
+    description.innerText = `${resultApi.description}`;
 
 
     // boucle pour mettre en place les options de couleurs 
     for (options in resultApi.colors) {
       colors.options[colors.options.length] = new Option(
+        resultApi.colors[options],
         resultApi.colors[options],
       );
     }
@@ -44,6 +49,7 @@ fetch(newUrl)
     const arrayItem = {
 
       id: id,
+      alt: imageAlt,
       image: imageURL,
       name: titre.innerHTML,
       price: prix.innerHTML,
@@ -68,7 +74,7 @@ fetch(newUrl)
         console.log(addItemInLocal);
       }
 
-      let addConfirm = () => {
+      const addConfirm = () => {
         alert('Le produit a été ajouté au panier');
       }
 
@@ -77,7 +83,7 @@ fetch(newUrl)
       // s'il y a des produits enregistrés dans le localStorage
       if (itemInLocal) {
         itemInLocal.forEach(function (itemTrue, key) {
-          if (itemTrue.id == id && itemTrue.color == colors.value) {
+          if (itemTrue.id === id && itemTrue.color === colors.value) {
             itemInLocal[key].quantity = parseInt(itemTrue.quantity) + parseInt(itemQty.value);
             localStorage.setItem('item', JSON.stringify(itemInLocal));
             update = true;
