@@ -45,20 +45,6 @@ fetch(newUrl)
     }
 
 
-    // je crée le tableau d'information que je vais retourner au localStorage
-    const arrayItem = {
-
-      id: id,
-      alt: imageAlt,
-      image: imageURL,
-      name: titre.innerHTML,
-      price: prix.innerHTML,
-      color: colors.value,
-      quantity: itemQty.value,
-    };
-    console.log(arrayItem);
-
-
     // on crée le formulaire d'envoie du bouton 
     const sendToCart = document.getElementById("addToCart");
     sendToCart.addEventListener('click', (event) => {
@@ -77,6 +63,19 @@ fetch(newUrl)
       const addConfirm = () => {
         alert('Le produit a été ajouté au panier');
       }
+
+      // je crée le tableau d'information que je vais retourner au localStorage
+    const arrayItem = {
+
+      id: id,
+      alt: imageAlt,
+      image: imageURL,
+      name: titre.innerHTML,
+      price: prix.innerHTML,
+      color: colors.value,
+      quantity: itemQty.value,
+    };
+    console.log(arrayItem);
 
       let update = false;
 
