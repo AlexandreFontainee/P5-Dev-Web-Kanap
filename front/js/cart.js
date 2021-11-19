@@ -15,13 +15,13 @@ if (itemInLocal === null) {
 
 // si pas vide 
 else {
-  function test() {
+
     let affichage = "";
 
-    itemInLocal.foreach((item) => {
-      const { id, description, price, color, alt, name, quantity, image } = item;
+    itemInLocal.forEach((item) => {
+      const { id, price, color, alt, name, quantity, image } = item;
 
-      affichage = + `
+      affichage += `
     
     <article class="cart__item" data-id="${id}" data-color="${color}">
     <div class="cart__item__img">
@@ -46,10 +46,7 @@ else {
   </article>
     `
 
-      
-
     });
-    document.getElementById('cartAndFormContainer').innerHTML = item;
-  }
+    document.getElementById('cartAndFormContainer').innerHTML = affichage;
   
 };
