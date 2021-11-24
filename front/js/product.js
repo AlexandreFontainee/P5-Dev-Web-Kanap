@@ -89,7 +89,7 @@ fetch(newUrl)
           }
         });
 
-        //
+        // s'il y a déjà un produit enregistré dans le storage
         if (!update) {
           addItemInLocal();
           addConfirm();
