@@ -31,8 +31,8 @@ fetch(newUrl)
     image.innerHTML = `<img src="${resultApi.imageUrl}" alt="${resultApi.altTxt}">`;
     imageURL = resultApi.imageUrl;
     imageAlt = resultApi.altTxt;
-    titre.innerHTML = `${resultApi.name};` 
-    prix.innerText = `${resultApi.price}`;
+    titre.innerHTML = `${resultApi.name}`;
+    prix.innerText = `${resultApi.price /100}`;
     description.innerText = `${resultApi.description}`;
 
 

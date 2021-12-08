@@ -13,11 +13,12 @@ if (itemInLocal === null) {
 // si pas vide 
 else {
 
-  const cartContainer = document.getElementById('cartAndFormContainer');
+  const cartContainer = document.getElementById('cart__items');
   let affichage = "";
 
   itemInLocal.forEach((item) => {
     const { id, price, color, alt, name, quantity, image } = item;
+    console.log("testo", itemInLocal);
 
     affichage += `
     
@@ -34,6 +35,8 @@ else {
       <div class="cart__item__content__settings">
         <div class="cart__item__content__settings__quantity">
           <p>Qté : </p>
+          <button id ="moins"> - </button> 
+          <button id ="plus"> + </button>
           <input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value="${quantity}">
         </div>
         <div class="cart__item__content__settings__delete">
@@ -44,141 +47,208 @@ else {
   </article>
     `
 
-  });
-  document.getElementById('cartAndFormContainer').innerHTML = affichage;
+
+    document.getElementById('cart__items').innerHTML = affichage;
+
+  }); // fin de la boucle avec mes items 
+
+  function total() {
+
+    // je récupère les quantités
+    let itemQtt = document.getElementsByClassName('itemQuantity');
+    //variable pour la longueur des qtt 
+    let pdtLength = itemQtt.length;
+    let totalQtt = 0;
+
+    // je boucle pour savoir le total 
+    for (var q = 0; q < pdtLength; q++) {
+      totalQtt += itemQtt[q].valueAsNumber;
+    };
+
+    // je transmet le résultat à mon html 
+    let qttDisplay = document.getElementById('totalQuantity');
+    qttDisplay.innerHTML = totalQtt;
+    console.log(totalQtt);
 
 
+    // je récupère le prix
 
-  // création du bouton supprimer 
+    let totalPrice = 0;
 
-  const suppSelection = document.querySelector(".deleteItem");
-  suppSelection.addEventListener('click', (event) => {
-    event.preventDefault();
+    // je boucle la quantité des deux éléments pour les multiplier ensuite 
+    for (let q = 0; q < pdtLength; q++) {
+      totalPrice += (itemQtt[q].valueAsNumber * itemInLocal[q].price);
+    };
+
+    // je transmet le résultat à mon html 
+    let priceDisplay = document.getElementById('totalPrice');
+    let fix = Math.round(totalPrice * 100) / 100; // pour arrondire le résultat à deux décimal 
+    priceDisplay.innerHTML = fix;
+
+    console.log(fix);
+
+  };
+  total();
 
 
-    localStorage.removeItem('item');
-    window.location.reload();
-  });
+  // function pour changer la valeur d'un canapé 
+  function qttChange() {
+
+    let itemqtt = document.querySelectorAll(".itemQuantity");
+
+    // je boucle la longueur pour chaque quantité 
+    for (let k = 0; k < itemqtt.length; k++) {
+      itemqtt[k].addEventListener("change", (e) => {
+        e.preventDefault();
+
+        //je sélectionner l'élément à modifier 
+        const qttSelect = itemInLocal[k].quantity;
+        const qttValue = itemqtt[k].valueAsNumber;
+
+        // je cherche l'élement que je veux avec la méthode find 
+        const qttSearch = itemInLocal.find((el) => el.qttValue !== qttSelect);
+
+        qttSearch.quantity = qttValue;
+        itemInLocal[k].quantity = qttSearch.quantity;
+
+        // je remplace le panier avec les bonnes valeurs 
+        localStorage.setItem("item", JSON.stringify(itemInLocal));
+
+        // je reload la page avec l'alert comme quoi la quantité a changé 
+        location.reload();
+        alert('Attention vous avez changé la quantité !')
+      });
+    };
 
 
-  // pour l'instant marche mais que pour supprimer tout les items 
+  };
+  qttChange();
 
+ // supprimer un des canapés 
 
-  // changement des quantités et ou de la couleur du produit 
-  function changeQuantity() {
+ const deleteItem = document.querySelectorAll('.deleteItem');
 
-    const itemquantt = document.querySelector('.itemQuantity');
-    for (let i = 0; itemquantt.length; i++) {
+  deleteItem.forEach((btn,) => {
+    btn.addEventListener('click', e => {
+      deleteItemSelect(e, itemInLocal);
+      location.reload();
+    });
 
-      itemquantt[i].addEventListener('change', (event) => {
-        event.preventDefault();
+    // je crée une function avec la méthode splice pour rechercher dans l'index quel capané supprimé 
+    function deleteItemSelect(index) {
+      itemInLocal.splice(index, 1);
+      localStorage.setItem('item', JSON.stringify(itemInLocal));
 
-        let newQtt = itemquantt[i].value;
-        // je crée le cart pour insérer les données avec les nouvelles quantités 
-
-        const newCart = {
-          id: itemInLocal[i].id,
-          image: itemInLocal[i].image,
-          alt: itemInLocal[i].alt,
-          name: itemInLocal[i].name,
-          color: itemInLocal[i].color,
-          price: itemInLocal[i].price,
-          quantity: newQtt,
-        };
-
-        itemInLocal[i] = newCart;
-        localStorage.setItem('item', JSON.stringify(itemInLocal));
-        alert('vous avez changé la quantité ')
-      })
+      if (itemInLocal.length === 0) {
+        localStorage.removeItem('item');
+        // quand mon panier est vide je remove mon localstorage et j'envoie un message un pop up comme quoi le panier est vide 
+        alert('Vous avez vidé votre panier');
+      };
 
     };
-  };
-  changeQuantity();
+
+  });
 
 
-};
+}; // fin de else 
+
 
 // partie formulaire 
 
-function sendFormulaire() {
-  const envoie = document.getElementById('order'); // bouton envoyer en bas du formulaire 
-  envoie.addEventListener('click', (e) => {
-    e.preventDefault();
 
-    // je récupère les données sous la forme d'un objet que je pourrai envoyer plus tard au serveur 
-    const contact = {
-      firstName: document.getElementById('firstName').value,
-      lastName: document.getElementById('lastName').value,
-      address: document.getElementById('address').value,
-      city: document.getElementById('city').value,
-      email: document.getElementById('email').value
+function formulaireCheck() {
+  
+  let form = document.querySelector(".cart__order__form");
+
+  // Ajout des Regex
+  let emailCheck = new RegExp(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/);
+  let nameCheck = new RegExp("^[a-zA-Z ,.'-]+$");
+  let cityCheck = new RegExp("^[a-zA-Z]+(?:[\s-][a-zA-Z]+)*$");
+  let addressCheck = new RegExp("^[0-9]{1,3}(?:(?:[,. ]){1}[-a-zA-Zàâäéèêëïîôöùûüç]+)+");
+
+  // Ecoute de la modification du nom
+  form.firstName.addEventListener('change', function () {
+    validFirstName(this);
+  });
+
+  // Ecoute de la modification du prénom
+  form.lastName.addEventListener('change', function () {
+    validLastName(this);
+  });
+
+  // Ecoute de la modification du prénom
+  form.address.addEventListener('change', function () {
+    validAddress(this);
+  });
+
+  // Ecoute de la modification du prénom
+  form.city.addEventListener('change', function () {
+    validCity(this);
+  });
+
+  // Ecoute de la modification du prénom
+  form.email.addEventListener('change', function () {
+    validEmail(this);
+  });
+
+  //validation du prénom
+  const validFirstName = function (inputFirstName) {
+    let firstNameErrorMsg = inputFirstName.nextElementSibling;
+
+    if (nameCheck.test(inputFirstName.value)) {
+      firstNameErrorMsg.innerHTML = '';
+    } else {
+      firstNameErrorMsg.innerHTML = 'Le champ n est pas valide !';
     }
+  };
 
+  //validation du nom
+  const validLastName = function (inputLastName) {
+    let lastNameErrorMsg = inputLastName.nextElementSibling;
 
-
-    // Je crée ensuite les vérification pour chaque input 
-
-    // contrôle du prénom :
-    const checkFirstName = contact.firstName;
-    if (/^[^0-9_!¡?÷?¿/\\+=@#$%ˆ&*(){}|~<>;:[\]]{2,20}$/.test(checkFirstName)) {
-      return true;
-      // si tout les paramètres sont respecté je retourne vrai
+    if (nameCheck.test(inputLastName.value)) {
+      lastNameErrorMsg.innerHTML = '';
     } else {
-      let errorFN = document.getElementById('firstNameErrorMsg');
-      errorFN.innerText = " Veuillez rentrer un prénom valide !";
-    };
-    // sinon je retourne faux 
+      lastNameErrorMsg.innerHTML = 'Le champ n est pas valide !';
+    }
+  };
 
+  //validation de l'adresse
+  const validAddress = function (inputAddress) {
+    let addressErrorMsg = inputAddress.nextElementSibling;
 
-    // contrôle du nom :
-    const checkName = contact.lastName;
-    if (/^[^0-9_!¡?÷?¿/\\+=@#$%ˆ&*(){}|~<>;:[\]]{3,20}$/.test(checkName)) {
-      return true;
-      // si tout les paramètres sont respecté je retourne vrai
+    if (addressCheck.test(inputAddress.value)) {
+      addressErrorMsg.innerHTML = '';
     } else {
-      let errorLN = document.getElementById('lastNameErrorMsg');
-      errorLN.innerText = "Veuillez rentrer un nom valide !";
-    };
-    // sinon je retourne faux 
+      addressErrorMsg.innerHTML = 'Le champ n est pas valide !';
+    }
+  };
 
+  //validation de la ville
+  const validCity = function (inputCity) {
+    let cityErrorMsg = inputCity.nextElementSibling;
 
-    // contrôle de l'adresse : 
-    const checkAddress = contact.address;
-    if (/\d{2}[ ]?\d{3}$/.test(checkAddress)) {
-      return true;
-      // si tout les paramètres sont respecté je retourne vrai
+    if (cityCheck.test(inputCity.value)) {
+      cityErrorMsg.innerHTML = '';
     } else {
-      let errorAdress = document.getElementById('addressErrorMsg');
-      errorAdress.innerText = "Votre adresse n'est pas écrite correctement !";
-    };
-    // sinon je retourne faux 
+      cityErrorMsg.innerHTML = 'Le champ n est pas valide !';
+    }
+  };
 
+  //validation de l'email
+  const validEmail = function (inputEmail) {
+    let emailErrorMsg = inputEmail.nextElementSibling;
 
-    // contrôle de la ville :
-    const checkCity = contact.city;
-    if (/^[^0-9_!¡?÷?¿/\\+=@#$%ˆ&*(){}|~<>;:[\]]{3,20}$/.test(checkCity)) {
-      return true;
-      // si tout les paramètres sont respecté je retourne vrai
-
+    if (emailCheck.test(inputEmail.value)) {
+      emailErrorMsg.innerHTML = '';
     } else {
-      let errorCity = document.getElementById('cityErrorMsg');
-      errorCity.innerText = "Votre ville ne correspond pas !";
-    };
-    // sinon je retourne faux 
-
-
-    // contrôle de l'email :
-    const checkEmail = contact.email;
-    if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(checkEmail)) {
-      return true;
-      // si tout les paramètres sont respecté je retourne vrai
-    } else {
-      let errorEmail = document.getElementById('emailErrorMsg');
-      errorEmail.innerText = "Votre email n'est pas valide !";
-    };
-    // sinon je retourne faux 
-
-
-  }); // addEvenlistener de l'objet contact
-
+      emailErrorMsg.innerHTML = 'Le champ n est pas valide !';
+    }
+  };
 };
+formulaireCheck();
+
+// checker si formulaire = true 
+// faire un objet 
+// l'envoyer a l'api pour la commande avec l'id 
+ 
