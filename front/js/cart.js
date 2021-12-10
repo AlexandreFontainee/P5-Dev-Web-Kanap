@@ -1,24 +1,21 @@
-const itemInLocal = JSON.parse(localStorage.getItem('item'));
-console.log('les canapés', itemInLocal);
-
+const cart = JSON.parse(localStorage.getItem('item'));
+console.log('les canapés', cart);
+const cartContainer = document.getElementById('cart__items');
+const positionEmptyCart = document.querySelector("#cart__items");
 // si le panier est vide :
-if (itemInLocal === null) {
-  document.querySelector("#cart__items").innerHTML = `
- <div class="cart__empty">
-   <p>Le panier est vide ! </p>
- </div>`;
-
+if (cart === null || cart == 0) {
+  const emptyCart = `<p>Votre panier est vide</p>`;
+  positionEmptyCart.innerHTML = emptyCart;
 }
-
 // si pas vide 
 else {
 
-  const cartContainer = document.getElementById('cart__items');
+  
   let affichage = "";
 
-  itemInLocal.forEach((item) => {
+  cart.forEach((item) => {
     const { id, price, color, alt, name, quantity, image } = item;
-    console.log("testo", itemInLocal);
+    console.log("testo", cart);
 
     affichage += `
     
@@ -35,8 +32,6 @@ else {
       <div class="cart__item__content__settings">
         <div class="cart__item__content__settings__quantity">
           <p>Qté : </p>
-          <button id ="moins"> - </button> 
-          <button id ="plus"> + </button>
           <input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value="${quantity}">
         </div>
         <div class="cart__item__content__settings__delete">
@@ -50,45 +45,48 @@ else {
 
     document.getElementById('cart__items').innerHTML = affichage;
 
+
+
+    function total() {
+
+      // je récupère les quantités
+      let itemQtt = document.getElementsByClassName('itemQuantity');
+      //variable pour la longueur des qtt 
+      let pdtLength = itemQtt.length;
+      let totalQtt = 0;
+
+      // je boucle pour savoir le total 
+      for (var q = 0; q < pdtLength; q++) {
+        totalQtt += itemQtt[q].valueAsNumber;
+      };
+
+      // je transmet le résultat à mon html 
+      let qttDisplay = document.getElementById('totalQuantity');
+      qttDisplay.innerHTML = totalQtt;
+      console.log(totalQtt);
+
+
+      // je récupère le prix
+
+      let totalPrice = 0;
+
+      // je boucle la quantité des deux éléments pour les multiplier ensuite 
+      for (let q = 0; q < pdtLength; q++) {
+        totalPrice += (itemQtt[q].valueAsNumber * cart[q].price);
+      };
+
+      // je transmet le résultat à mon html 
+      let priceDisplay = document.getElementById('totalPrice');
+      let fix = Math.round(totalPrice * 100) / 100; // pour arrondire le résultat à deux décimal 
+      priceDisplay.innerHTML = fix;
+
+      console.log(fix);
+
+    };
+
+    total();
+
   }); // fin de la boucle avec mes items 
-
-  function total() {
-
-    // je récupère les quantités
-    let itemQtt = document.getElementsByClassName('itemQuantity');
-    //variable pour la longueur des qtt 
-    let pdtLength = itemQtt.length;
-    let totalQtt = 0;
-
-    // je boucle pour savoir le total 
-    for (var q = 0; q < pdtLength; q++) {
-      totalQtt += itemQtt[q].valueAsNumber;
-    };
-
-    // je transmet le résultat à mon html 
-    let qttDisplay = document.getElementById('totalQuantity');
-    qttDisplay.innerHTML = totalQtt;
-    console.log(totalQtt);
-
-
-    // je récupère le prix
-
-    let totalPrice = 0;
-
-    // je boucle la quantité des deux éléments pour les multiplier ensuite 
-    for (let q = 0; q < pdtLength; q++) {
-      totalPrice += (itemQtt[q].valueAsNumber * itemInLocal[q].price);
-    };
-
-    // je transmet le résultat à mon html 
-    let priceDisplay = document.getElementById('totalPrice');
-    let fix = Math.round(totalPrice * 100) / 100; // pour arrondire le résultat à deux décimal 
-    priceDisplay.innerHTML = fix;
-
-    console.log(fix);
-
-  };
-  total();
 
 
   // function pour changer la valeur d'un canapé 
@@ -102,21 +100,20 @@ else {
         e.preventDefault();
 
         //je sélectionner l'élément à modifier 
-        const qttSelect = itemInLocal[k].quantity;
+        const qttSelect = cart[k].quantity;
         const qttValue = itemqtt[k].valueAsNumber;
 
         // je cherche l'élement que je veux avec la méthode find 
-        const qttSearch = itemInLocal.find((el) => el.qttValue !== qttSelect);
+        const qttSearch = cart.find((el) => el.qttValue !== qttSelect);
 
         qttSearch.quantity = qttValue;
-        itemInLocal[k].quantity = qttSearch.quantity;
+        cart[k].quantity = qttSearch.quantity;
 
         // je remplace le panier avec les bonnes valeurs 
-        localStorage.setItem("item", JSON.stringify(itemInLocal));
+        localStorage.setItem("item", JSON.stringify(cart));
 
-        // je reload la page avec l'alert comme quoi la quantité a changé 
+        // je reload la page  
         location.reload();
-        alert('Attention vous avez changé la quantité !')
       });
     };
 
@@ -124,22 +121,22 @@ else {
   };
   qttChange();
 
- // supprimer un des canapés 
+  // supprimer un des canapés 
 
- const deleteItem = document.querySelectorAll('.deleteItem');
+  const deleteItem = document.querySelectorAll('.deleteItem');
 
   deleteItem.forEach((btn,) => {
     btn.addEventListener('click', e => {
-      deleteItemSelect(e, itemInLocal);
+      deleteItemSelect(e, cart);
       location.reload();
     });
 
     // je crée une function avec la méthode splice pour rechercher dans l'index quel capané supprimé 
     function deleteItemSelect(index) {
-      itemInLocal.splice(index, 1);
-      localStorage.setItem('item', JSON.stringify(itemInLocal));
+      cart.splice(index, 1);
+      localStorage.setItem('item', JSON.stringify(cart));
 
-      if (itemInLocal.length === 0) {
+      if (cart.length === 0) {
         localStorage.removeItem('item');
         // quand mon panier est vide je remove mon localstorage et j'envoie un message un pop up comme quoi le panier est vide 
         alert('Vous avez vidé votre panier');
@@ -157,7 +154,7 @@ else {
 
 
 function formulaireCheck() {
-  
+
   let form = document.querySelector(".cart__order__form");
 
   // Ajout des Regex
@@ -248,7 +245,59 @@ function formulaireCheck() {
 };
 formulaireCheck();
 
-// checker si formulaire = true 
-// faire un objet 
-// l'envoyer a l'api pour la commande avec l'id 
- 
+function PostApi(){
+  const btn_commander = document.getElementById("order");
+
+  btn_commander.addEventListener('click', (e) => {
+    e.preventDefault();
+
+
+    // le tableau pour les id 
+    let itemId = [];
+    for (let z = 0; z < cart.length; z++) {
+      itemId.push(cart[z].id);
+    }
+    console.log(itemId);
+
+
+    let inputName = document.getElementById("firstName");
+    let inputLastName = document.getElementById("lastName");
+    let inputAdress = document.getElementById("address");
+    let inputCity = document.getElementById("city");
+    let inputMail = document.getElementById("email");
+
+    const order = {
+
+      contact: {
+        firstName: inputName.value,
+        lastName: inputLastName.value,
+        address: inputAdress.value,
+        city: inputCity.value,
+        email: inputMail.value,
+      },
+      products: itemId,
+    }
+
+    const options = {
+      method: 'POST',
+      body: JSON.stringify(order),
+      headers: {
+        'Accept': 'application/json',
+        "Content-Type": "application/json"
+      },
+    };
+
+    fetch("http://localhost:3000/api/products/order", options)
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        localStorage.clear();
+        localStorage.setItem("orderId", data.orderId);
+
+        document.location.href = "confirmation.html";
+      });
+
+  }); // fin du addEvent orderBtn
+
+};
+PostApi();

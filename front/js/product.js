@@ -51,12 +51,12 @@ fetch(newUrl)
       event.preventDefault();
 
 
-      let itemInLocal = JSON.parse(localStorage.getItem('item'));
-      console.log(itemInLocal);
+      let cart = JSON.parse(localStorage.getItem('item'));
+      console.log(cart);
 
       const addItemInLocal = () => {
-        itemInLocal.push(arrayItem);
-        localStorage.setItem('item', JSON.stringify(itemInLocal));
+        cart.push(arrayItem);
+        localStorage.setItem('item', JSON.stringify(cart));
         console.log(addItemInLocal);
       }
 
@@ -80,11 +80,11 @@ fetch(newUrl)
       let update = false;
 
       // s'il y a des produits enregistrés dans le localStorage
-      if (itemInLocal) {
-        itemInLocal.forEach(function (itemTrue, key) {
+      if (cart) {
+        cart.forEach(function (itemTrue, key) {
           if (itemTrue.id === id && itemTrue.color === colors.value) {
-            itemInLocal[key].quantity = parseInt(itemTrue.quantity) + parseInt(itemQty.value);
-            localStorage.setItem('item', JSON.stringify(itemInLocal));
+            cart[key].quantity = parseInt(itemTrue.quantity) + parseInt(itemQty.value);
+            localStorage.setItem('item', JSON.stringify(cart));
             update = true;
           }
         });
@@ -93,16 +93,16 @@ fetch(newUrl)
         if (!update) {
           addItemInLocal();
           addConfirm();
-          console.log(itemInLocal);
+          console.log(cart);
         }
       }
 
       // s'il n'y a aucun produit enregistré dans le localStorage 
       else {
-        itemInLocal = [];
+        cart = [];
         addItemInLocal();
         addConfirm();
-        console.log(itemInLocal);
+        console.log(cart);
       }
 
     });
