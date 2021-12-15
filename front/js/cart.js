@@ -1,16 +1,16 @@
-const cart = JSON.parse(localStorage.getItem('item'));
+const cart = JSON.parse(localStorage.getItem('cart'));
 console.log('les canapés', cart);
 const cartContainer = document.getElementById('cart__items');
-const positionEmptyCart = document.querySelector("#cart__items");
+
 // si le panier est vide :
 if (cart === null || cart == 0) {
-  const emptyCart = `<p>Votre panier est vide</p>`;
-  positionEmptyCart.innerHTML = emptyCart;
+  const empty = `<p>Votre panier est vide</p>`;
+  cartContainer.innerHTML = empty;
 }
 // si pas vide 
 else {
 
-  
+
   let affichage = "";
 
   cart.forEach((item) => {
@@ -86,9 +86,9 @@ else {
 
     total();
 
+
+
   }); // fin de la boucle avec mes items 
-
-
   // function pour changer la valeur d'un canapé 
   function qttChange() {
 
@@ -121,31 +121,42 @@ else {
   };
   qttChange();
 
+
   // supprimer un des canapés 
 
-  const deleteItem = document.querySelectorAll('.deleteItem');
 
-  deleteItem.forEach((btn,) => {
-    btn.addEventListener('click', e => {
-      deleteItemSelect(e, cart);
-      location.reload();
-    });
-
-    // je crée une function avec la méthode splice pour rechercher dans l'index quel capané supprimé 
-    function deleteItemSelect(index) {
-      cart.splice(index, 1);
-      localStorage.setItem('item', JSON.stringify(cart));
-
-      if (cart.length === 0) {
-        localStorage.removeItem('item');
-        // quand mon panier est vide je remove mon localstorage et j'envoie un message un pop up comme quoi le panier est vide 
-        alert('Vous avez vidé votre panier');
-      };
-
+  
+    // je selectionne le container parent
+    const cartGlobal = document.getElementById('cartAndFormContainer');
+    // je selection son child 
+    const cartItem = document.querySelector('.cart__item');
+  
+  // je crée une fonction delete 
+    function deleted() {
+  
+      // quand cette fonction est appelé l'élément parent supprime l'élément enfant 
+      let removeItem = cartGlobal.removeChild(cartItem);
+      removeItem;
+      // je mets à jour le localstorage
+      localStorage.setItem('cart', JSON.stringify(cart));
     };
-
-  });
-
+    deleted();
+  
+    const deleteItem = document.querySelectorAll('.deleteItem');
+  
+    // j'écoute le click de tout les btn  deleteItem 
+    deleteItem.addEventListener('click', (e) => {
+      e.preventDefault();
+  
+      // je crée une variable ou je prends les infos de data id pour selectionner le bon produit
+      const dataIdGet = cartItem.dataset.id;
+  
+      // j'appel la fonction pour supprimer l'élément en lui passant le bon id 
+      deleted(dataIdGet);
+  
+    });
+  
+ 
 
 }; // fin de else 
 
@@ -245,7 +256,7 @@ function formulaireCheck() {
 };
 formulaireCheck();
 
-function PostApi(){
+function PostApi() {
   const btn_commander = document.getElementById("order");
 
   btn_commander.addEventListener('click', (e) => {

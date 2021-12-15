@@ -51,12 +51,12 @@ fetch(newUrl)
       event.preventDefault();
 
 
-      let cart = JSON.parse(localStorage.getItem('item'));
+      let cart = JSON.parse(localStorage.getItem('cart'));
       console.log(cart);
 
       const addItemInLocal = () => {
         cart.push(arrayItem);
-        localStorage.setItem('item', JSON.stringify(cart));
+        localStorage.setItem('cart', JSON.stringify(cart));
         console.log(addItemInLocal);
       }
 
@@ -84,7 +84,7 @@ fetch(newUrl)
         cart.forEach(function (itemTrue, key) {
           if (itemTrue.id === id && itemTrue.color === colors.value) {
             cart[key].quantity = parseInt(itemTrue.quantity) + parseInt(itemQty.value);
-            localStorage.setItem('item', JSON.stringify(cart));
+            localStorage.setItem('cart', JSON.stringify(cart));
             update = true;
           }
         });
