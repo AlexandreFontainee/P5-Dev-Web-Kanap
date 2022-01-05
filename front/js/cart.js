@@ -1,3 +1,4 @@
+
 const cart = JSON.parse(localStorage.getItem('cart'));
 console.log('les canapés', cart);
 const cartContainer = document.getElementById('cart__items');
@@ -15,7 +16,6 @@ else {
 
   cart.forEach((item) => {
     const { id, price, color, alt, name, quantity, image } = item;
-    console.log("testo", cart);
 
     affichage += `
     
@@ -46,50 +46,58 @@ else {
     document.getElementById('cart__items').innerHTML = affichage;
 
 
+    // liste de constante à réutiliser plus tard 
+    const itemID = item.id;
+    const itemQuantity = item.quantity;
+    const itemColor = item.color;
+    const itemPrice = item.price;
 
-    function total() {
 
-      // je récupère les quantités
-      let itemQtt = document.getElementsByClassName('itemQuantity');
-      //variable pour la longueur des qtt 
-      let pdtLength = itemQtt.length;
-      let totalQtt = 0;
+    let getCID = (function () {
+      let idItem = itemID;
+      let colorItem = itemColor;
 
-      // je boucle pour savoir le total 
-      for (var q = 0; q < pdtLength; q++) {
-        totalQtt += itemQtt[q].valueAsNumber;
+      return function () {
+        return idItem, colorItem;
+
       };
 
-      // je transmet le résultat à mon html 
-      let qttDisplay = document.getElementById('totalQuantity');
-      qttDisplay.innerHTML = totalQtt;
-      console.log(totalQtt);
+    })();
+    getCID();
+
+    console.log(getCID());
 
 
-      // je récupère le prix
 
-      let totalPrice = 0;
-
-      // je boucle la quantité des deux éléments pour les multiplier ensuite 
-      for (let q = 0; q < pdtLength; q++) {
-        totalPrice += (itemQtt[q].valueAsNumber * cart[q].price);
-      };
-
-      // je transmet le résultat à mon html 
-      let priceDisplay = document.getElementById('totalPrice');
-      let fix = Math.round(totalPrice * 100) / 100; // pour arrondire le résultat à deux décimal 
-      priceDisplay.innerHTML = fix;
-
-      console.log(fix);
-
+    function deleted(id) {
+      let Kanap = this;
+      if (item.quantity > 1) {
+        item.quantity--;
+      } else {
+        cart.splice(id, 1);
+      }
+      localStorage.setItem('cart', JSON.stringify(cart));
+      window.location.reload();
     };
 
-    total();
+    document.querySelectorAll('.deleteItem').forEach(deleteItem => {
+      deleteItem.addEventListener('click', () => deleted(deleteItem.dataset.id))
+    });
 
 
 
-  }); // fin de la boucle avec mes items 
-  // function pour changer la valeur d'un canapé 
+
+    document.querySelectorAll('.itemQuantity').forEach(changeValue => {
+      changeValue.addEventListener('click', () => change(changeValue.dataset.id))
+    });
+
+    function change(quantity) {
+
+
+    }
+
+
+   // function pour changer la valeur d'un canapé 
   function qttChange() {
 
     let itemqtt = document.querySelectorAll(".itemQuantity");
@@ -110,53 +118,57 @@ else {
         cart[k].quantity = qttSearch.quantity;
 
         // je remplace le panier avec les bonnes valeurs 
-        localStorage.setItem("item", JSON.stringify(cart));
+        localStorage.setItem("cart", JSON.stringify(cart));
 
         // je reload la page  
         location.reload();
       });
     };
 
-
   };
   qttChange();
 
 
-  // supprimer un des canapés 
 
+    // je récupère les quantités
+    let itemQtt = document.getElementsByClassName('itemQuantity');
+    //variable pour la longueur des qtt 
+    let pdtLength = itemQtt.length;
+    let totalQtt = 0;
 
-  
-    // je selectionne le container parent
-    const cartGlobal = document.getElementById('cartAndFormContainer');
-    // je selection son child 
-    const cartItem = document.querySelector('.cart__item');
-  
-  // je crée une fonction delete 
-    function deleted() {
-  
-      // quand cette fonction est appelé l'élément parent supprime l'élément enfant 
-      let removeItem = cartGlobal.removeChild(cartItem);
-      removeItem;
-      // je mets à jour le localstorage
-      localStorage.setItem('cart', JSON.stringify(cart));
+    // je boucle pour savoir le total 
+    for (var q = 0; q < pdtLength; q++) {
+      totalQtt += itemQtt[q].valueAsNumber;
     };
-    deleted();
-  
-    const deleteItem = document.querySelectorAll('.deleteItem');
-  
-    // j'écoute le click de tout les btn  deleteItem 
-    deleteItem.addEventListener('click', (e) => {
-      e.preventDefault();
-  
-      // je crée une variable ou je prends les infos de data id pour selectionner le bon produit
-      const dataIdGet = cartItem.dataset.id;
-  
-      // j'appel la fonction pour supprimer l'élément en lui passant le bon id 
-      deleted(dataIdGet);
-  
-    });
-  
- 
+
+    // je transmet le résultat à mon html 
+    let qttDisplay = document.getElementById('totalQuantity');
+    qttDisplay.innerHTML = totalQtt;
+    console.log(totalQtt);
+
+
+    // je récupère le prix
+
+    let totalPrice = 0;
+
+    // je boucle la quantité des deux éléments pour les multiplier ensuite 
+    for (let q = 0; q < pdtLength; q++) {
+      totalPrice += (itemQtt[q].valueAsNumber * cart[q].price);
+    };
+
+    // je transmet le résultat à mon html 
+    let priceDisplay = document.getElementById('totalPrice');
+    let fix = Math.round(totalPrice);
+    priceDisplay.innerHTML = fix;
+
+    console.log(fix);
+
+
+
+
+
+  });// fin du for each 
+
 
 }; // fin de else 
 

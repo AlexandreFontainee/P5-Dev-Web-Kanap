@@ -32,7 +32,7 @@ fetch(newUrl)
     imageURL = resultApi.imageUrl;
     imageAlt = resultApi.altTxt;
     titre.innerHTML = `${resultApi.name}`;
-    prix.innerText = `${resultApi.price /100}`;
+    prix.innerText = `${resultApi.price }`;
     description.innerText = `${resultApi.description}`;
 
 
