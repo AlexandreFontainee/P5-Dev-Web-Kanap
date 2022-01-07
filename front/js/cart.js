@@ -69,20 +69,20 @@ else {
 
 
 
-    function deleted(id) {
-      let Kanap = this;
-      if (item.quantity > 1) {
-        item.quantity--;
-      } else {
-        cart.splice(id, 1);
-      }
+    function deleted(i) {
+      cart.splice(i,1);    
       localStorage.setItem('cart', JSON.stringify(cart));
-      window.location.reload();
     };
 
     document.querySelectorAll('.deleteItem').forEach(deleteItem => {
-      deleteItem.addEventListener('click', () => deleted(deleteItem.dataset.id))
+      deleteItem.addEventListener('click', function()  {
+        deleted(deleteItem.dataset.id , deleteItem.dataset.color)
+        if (cartContainer.parentNode) {
+          cartContainer.parentNode.removeChild(cartContainer);
+        }
+      })
     });
+
 
 
 
@@ -90,6 +90,8 @@ else {
     document.querySelectorAll('.itemQuantity').forEach(changeValue => {
       changeValue.addEventListener('click', () => change(changeValue.dataset.id))
     });
+
+
 
     function change(quantity) {
 
