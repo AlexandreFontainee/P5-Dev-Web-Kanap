@@ -1,5 +1,5 @@
 
-const cart = JSON.parse(localStorage.getItem('cart'));
+let cart = JSON.parse(localStorage.getItem('cart'));
 console.log('les canapés', cart);
 const cartContainer = document.getElementById('cart__items');
 
@@ -47,44 +47,35 @@ else {
 
 
     // liste de constante à réutiliser plus tard 
-    const itemID = item.id;
-    const itemQuantity = item.quantity;
-    const itemColor = item.color;
-    const itemPrice = item.price;
-
-
-    let getCID = (function () {
-      let idItem = itemID;
-      let colorItem = itemColor;
-
-      return function () {
-        return idItem, colorItem;
-
-      };
-
-    })();
-    getCID();
-
-    console.log(getCID());
+    
+    console.table(cart);
 
 
 
-    function deleted(i) {
-      cart.splice(i,1);    
-      localStorage.setItem('cart', JSON.stringify(cart));
-    };
-
-    document.querySelectorAll('.deleteItem').forEach(deleteItem => {
-      deleteItem.addEventListener('click', function()  {
-        deleted(deleteItem.dataset.id , deleteItem.dataset.color)
-        if (cartContainer.parentNode) {
-          cartContainer.parentNode.removeChild(cartContainer);
-        }
-      })
-    });
-
-
-
+    function deleteProduct() {
+      let deleteItem = document.querySelectorAll(".deleteItem");
+  
+      for (let s = 0; s < deleteItem.length; s++){
+        deleteItem[s].addEventListener("click" , (event) => {
+              event.preventDefault();
+  
+              let idDelete = cart[s].id;
+              let colorDelete = cart[s].color;
+  
+              cart = cart.filter( el => el.id !== idDelete || el.color !== colorDelete );
+              
+              localStorage.setItem("cart", JSON.stringify(cart));
+   
+              let test = document.getElementById('cart__items');
+              test.removeChild(test.childNodes[s]);
+            
+              console.log(shessh )
+          })
+          
+      }
+  }
+  deleteProduct();
+    
 
 
     document.querySelectorAll('.itemQuantity').forEach(changeValue => {
