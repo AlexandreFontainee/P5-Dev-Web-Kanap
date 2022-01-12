@@ -1,9 +1,6 @@
-function orderId() {
-
-    const displayOrder = document.getElementById("orderId");
-    getOrder = localStorage.getItem("orderId");
-    displayOrder.innerHTML = getOrder;
+function ID(){
+    const orderId = document.getElementById('orderId');
+    orderId.innerHTML = localStorage.getItem('orderId');
     localStorage.clear();
-
-};
-orderId();
+}
+ID();

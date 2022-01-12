@@ -47,79 +47,76 @@ else {
 
 
     // liste de constante à réutiliser plus tard 
-    
+
     console.table(cart);
 
 
 
     function deleteProduct() {
       let deleteItem = document.querySelectorAll(".deleteItem");
-  
-      for (let s = 0; s < deleteItem.length; s++){
-        deleteItem[s].addEventListener("click" , (event) => {
-              event.preventDefault();
-  
-              let idDelete = cart[s].id;
-              let colorDelete = cart[s].color;
-  
-              cart = cart.filter( el => el.id !== idDelete || el.color !== colorDelete );
-              
-              localStorage.setItem("cart", JSON.stringify(cart));
-   
-              let test = document.getElementById('cart__items');
-              test.removeChild(test.childNodes[s]);
-            
-              console.log(shessh )
-          })
-          
+
+      for (let s = 0; s < deleteItem.length; s++) {
+        deleteItem[s].addEventListener("click", (event) => {
+          event.preventDefault();
+
+          let idDelete = cart[s].id;
+          let colorDelete = cart[s].color;
+
+          cart = cart.filter(el => el.id !== idDelete || el.color !== colorDelete);
+
+          let oui =  cartContainer.closest(":not(div)");
+          console.log(oui);
+                    
+        })
+        save();
       }
-  }
-  deleteProduct();
+    }
+    deleteProduct();
+  
     
 
-
-    document.querySelectorAll('.itemQuantity').forEach(changeValue => {
-      changeValue.addEventListener('click', () => change(changeValue.dataset.id))
-    });
-
-
-
-    function change(quantity) {
-
-
-    }
-
-
-   // function pour changer la valeur d'un canapé 
-  function qttChange() {
-
-    let itemqtt = document.querySelectorAll(".itemQuantity");
-
-    // je boucle la longueur pour chaque quantité 
-    for (let k = 0; k < itemqtt.length; k++) {
-      itemqtt[k].addEventListener("change", (e) => {
-        e.preventDefault();
-
-        //je sélectionner l'élément à modifier 
-        const qttSelect = cart[k].quantity;
-        const qttValue = itemqtt[k].valueAsNumber;
-
-        // je cherche l'élement que je veux avec la méthode find 
-        const qttSearch = cart.find((el) => el.qttValue !== qttSelect);
-
-        qttSearch.quantity = qttValue;
-        cart[k].quantity = qttSearch.quantity;
-
-        // je remplace le panier avec les bonnes valeurs 
-        localStorage.setItem("cart", JSON.stringify(cart));
-
-        // je reload la page  
-        location.reload();
-      });
+    function getCart() {
+      let kanap = localStorage.getItem('cart');
+      return (kanap != null) ? JSON.parse(kanap) : [];
     };
 
-  };
-  qttChange();
+    function save() {
+      localStorage.setItem("cart", JSON.stringify(cart));
+    };
+
+
+
+
+    // function pour changer la valeur d'un canapé 
+    function qttChange() {
+
+      let itemqtt = document.querySelectorAll(".itemQuantity");
+
+      // je boucle la longueur pour chaque quantité 
+      for (let k = 0; k < itemqtt.length; k++) {
+        itemqtt[k].addEventListener("change", (e) => {
+          e.preventDefault();
+
+          //je sélectionner l'élément à modifier 
+          const qttSelect = cart[k].quantity;
+          const qttValue = itemqtt[k].valueAsNumber;
+
+          // je cherche l'élement que je veux avec la méthode find 
+          const qttSearch = cart.find((el) => el.qttValue !== qttSelect);
+
+          qttSearch.quantity = qttValue;
+          cart[k].quantity = qttSearch.quantity;
+
+          // je remplace le panier avec les bonnes valeurs 
+          save()
+
+          // je reload la page  
+          location.reload();
+        });
+      };
+
+    };
+    qttChange();
 
 
 
@@ -157,9 +154,6 @@ else {
     console.log(fix);
 
 
-
-
-
   });// fin du for each 
 
 
@@ -167,6 +161,7 @@ else {
 
 
 // partie formulaire 
+
 
 
 function formulaireCheck() {
