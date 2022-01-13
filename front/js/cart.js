@@ -64,11 +64,14 @@ else {
 
           cart = cart.filter(el => el.id !== idDelete || el.color !== colorDelete);
 
-          let oui =  cartContainer.closest(":not(div)");
-          console.log(oui);
-                    
+          let target = document.getElementById('cart__items');
+          target.childNodes[s];
+          target.removeChild(target.children[s]);
+          save();  
         })
-        save();
+        
+        
+        
       }
     }
     deleteProduct();
