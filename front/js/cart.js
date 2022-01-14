@@ -14,6 +14,7 @@ else {
 
   let affichage = "";
 
+  // boucle forEach pour attribuer les différente values 
   cart.forEach((item) => {
     const { id, price, color, alt, name, quantity, image } = item;
 
@@ -42,16 +43,52 @@ else {
   </article>
     `
 
-
     document.getElementById('cart__items').innerHTML = affichage;
 
 
-    // liste de constante à réutiliser plus tard 
-
     console.table(cart);
 
+    // fonction pour afficher les prix dans le html || servira pour raffraichir les prix ensuite 
+    function updateQuantityPrice(){
 
+      // je récupère les quantités
+    let itemQtt = document.getElementsByClassName('itemQuantity');
+    let pdtLength = itemQtt.length;
 
+    // j'initialise ma variable pour le total des quantités
+    let totalQtt = 0;
+
+    // je boucle pour savoir le total 
+    for (var q = 0; q < pdtLength; q++) {
+      totalQtt += itemQtt[q].valueAsNumber;
+    };
+
+    // je transmet le résultat à mon html 
+    let qttDisplay = document.getElementById('totalQuantity');
+    qttDisplay.innerHTML = totalQtt;
+    console.log(totalQtt);
+
+    // j'initialise ma variable pour le total des prix
+    let totalPrice = 0;
+
+    // je boucle pour avoir le prix des articles en fonction des quantités 
+    for (let q = 0; q < pdtLength; q++) {
+      totalPrice += (itemQtt[q].valueAsNumber * cart[q].price);
+    };
+
+    // je transmet le résultat à mon html 
+    let priceDisplay = document.getElementById('totalPrice');
+    let fix = Math.round(totalPrice);
+    priceDisplay.innerHTML = fix;
+
+    // pour finir je set mon cart (sera surtout utile quand je delete un canapé)
+    localStorage.setItem("cart", JSON.stringify(cart));
+ 
+    };
+    updateQuantityPrice();
+   
+
+    // fonction pour supprimer un produit choisi
     function deleteProduct() {
       let deleteItem = document.querySelectorAll(".deleteItem");
 
@@ -62,35 +99,24 @@ else {
           let idDelete = cart[s].id;
           let colorDelete = cart[s].color;
 
+          // méthode filter pour trouver le bonne élément de la boucle 
           cart = cart.filter(el => el.id !== idDelete || el.color !== colorDelete);
 
+          // removeChild pour enlever dynamiquement le html de l'article
           let target = document.getElementById('cart__items');
           target.childNodes[s];
           target.removeChild(target.children[s]);
-          save();  
+
+          // update des prix et quantités de façon dynamique 
+          updateQuantityPrice();
         })
-        
-        
         
       }
     }
     deleteProduct();
-  
+
     
-
-    function getCart() {
-      let kanap = localStorage.getItem('cart');
-      return (kanap != null) ? JSON.parse(kanap) : [];
-    };
-
-    function save() {
-      localStorage.setItem("cart", JSON.stringify(cart));
-    };
-
-
-
-
-    // function pour changer la valeur d'un canapé 
+    // fonction pour que l'utilisateur puisse changer la quantité d'un canapé 
     function qttChange() {
 
       let itemqtt = document.querySelectorAll(".itemQuantity");
@@ -111,50 +137,13 @@ else {
           cart[k].quantity = qttSearch.quantity;
 
           // je remplace le panier avec les bonnes valeurs 
-          save()
+          updateQuantityPrice();
 
-          // je reload la page  
-          location.reload();
         });
       };
 
     };
     qttChange();
-
-
-
-    // je récupère les quantités
-    let itemQtt = document.getElementsByClassName('itemQuantity');
-    //variable pour la longueur des qtt 
-    let pdtLength = itemQtt.length;
-    let totalQtt = 0;
-
-    // je boucle pour savoir le total 
-    for (var q = 0; q < pdtLength; q++) {
-      totalQtt += itemQtt[q].valueAsNumber;
-    };
-
-    // je transmet le résultat à mon html 
-    let qttDisplay = document.getElementById('totalQuantity');
-    qttDisplay.innerHTML = totalQtt;
-    console.log(totalQtt);
-
-
-    // je récupère le prix
-
-    let totalPrice = 0;
-
-    // je boucle la quantité des deux éléments pour les multiplier ensuite 
-    for (let q = 0; q < pdtLength; q++) {
-      totalPrice += (itemQtt[q].valueAsNumber * cart[q].price);
-    };
-
-    // je transmet le résultat à mon html 
-    let priceDisplay = document.getElementById('totalPrice');
-    let fix = Math.round(totalPrice);
-    priceDisplay.innerHTML = fix;
-
-    console.log(fix);
 
 
   });// fin du for each 
