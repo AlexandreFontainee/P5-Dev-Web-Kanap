@@ -71,7 +71,6 @@ fetch(newUrl)
       alt: imageAlt,
       image: imageURL,
       name: titre.innerHTML,
-      price: prix.innerHTML,
       color: colors.value,
       quantity: itemQty.value,
     };

@@ -17,6 +17,7 @@ else {
   // boucle forEach pour attribuer les différente values 
   cart.forEach((item) => {
     const { id, price, color, alt, name, quantity, image } = item;
+    const prix = document.querySelector('.cart__item__content__titlePrice');
 
     affichage += `
     
@@ -49,44 +50,44 @@ else {
     console.table(cart);
 
     // fonction pour afficher les prix dans le html || servira pour raffraichir les prix ensuite 
-    function updateQuantityPrice(){
+    function updateQuantityPrice() {
 
       // je récupère les quantités
-    let itemQtt = document.getElementsByClassName('itemQuantity');
-    let pdtLength = itemQtt.length;
+      let itemQtt = document.getElementsByClassName('itemQuantity');
+      let pdtLength = itemQtt.length;
 
-    // j'initialise ma variable pour le total des quantités
-    let totalQtt = 0;
+      // j'initialise ma variable pour le total des quantités
+      let totalQtt = 0;
 
-    // je boucle pour savoir le total 
-    for (var q = 0; q < pdtLength; q++) {
-      totalQtt += itemQtt[q].valueAsNumber;
-    };
+      // je boucle pour savoir le total 
+      for (var q = 0; q < pdtLength; q++) {
+        totalQtt += itemQtt[q].valueAsNumber;
+      };
 
-    // je transmet le résultat à mon html 
-    let qttDisplay = document.getElementById('totalQuantity');
-    qttDisplay.innerHTML = totalQtt;
-    console.log(totalQtt);
+      // je transmet le résultat à mon html 
+      let qttDisplay = document.getElementById('totalQuantity');
+      qttDisplay.innerHTML = totalQtt;
+      console.log(totalQtt);
 
-    // j'initialise ma variable pour le total des prix
-    let totalPrice = 0;
+      // j'initialise ma variable pour le total des prix
+      let totalPrice = 0;
 
-    // je boucle pour avoir le prix des articles en fonction des quantités 
-    for (let q = 0; q < pdtLength; q++) {
-      totalPrice += (itemQtt[q].valueAsNumber * cart[q].price);
-    };
+      // je boucle pour avoir le prix des articles en fonction des quantités 
+      for (let q = 0; q < pdtLength; q++) {
+        totalPrice += (itemQtt[q].valueAsNumber * cart[q].price);
+      };
 
-    // je transmet le résultat à mon html 
-    let priceDisplay = document.getElementById('totalPrice');
-    let fix = Math.round(totalPrice);
-    priceDisplay.innerHTML = fix;
+      // je transmet le résultat à mon html 
+      let priceDisplay = document.getElementById('totalPrice');
+      let fix = Math.round(totalPrice);
+      priceDisplay.innerHTML = fix;
 
-    // pour finir je set mon cart (sera surtout utile quand je delete un canapé)
-    localStorage.setItem("cart", JSON.stringify(cart));
- 
+      // pour finir je set mon cart (sera surtout utile quand je delete un canapé)
+      localStorage.setItem("cart", JSON.stringify(cart));
+
     };
     updateQuantityPrice();
-   
+
 
     // fonction pour supprimer un produit choisi
     function deleteProduct() {
@@ -110,12 +111,12 @@ else {
           // update des prix et quantités de façon dynamique 
           updateQuantityPrice();
         })
-        
+
       }
     }
     deleteProduct();
 
-    
+
     // fonction pour que l'utilisateur puisse changer la quantité d'un canapé 
     function qttChange() {
 
@@ -155,152 +156,159 @@ else {
 // partie formulaire 
 
 
+let form = document.querySelector(".cart__order__form");
 
-function formulaireCheck() {
+// Ajout des Regex
+let emailCheck = new RegExp(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/);
+let nameCheck = new RegExp("^[a-zA-Z ,.'-]+$");
+let cityCheck = new RegExp("^[a-zA-Z]+(?:[\s-][a-zA-Z]+)*$");
+let addressCheck = new RegExp("^[0-9]{1,3}(?:(?:[,. ]){1}[-a-zA-Zàâäéèêëïîôöùûüç]+)+");
 
-  let form = document.querySelector(".cart__order__form");
 
-  // Ajout des Regex
-  let emailCheck = new RegExp(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/);
-  let nameCheck = new RegExp("^[a-zA-Z ,.'-]+$");
-  let cityCheck = new RegExp("^[a-zA-Z]+(?:[\s-][a-zA-Z]+)*$");
-  let addressCheck = new RegExp("^[0-9]{1,3}(?:(?:[,. ]){1}[-a-zA-Zàâäéèêëïîôöùûüç]+)+");
+// Ecoute de la modification du nom
+form.firstName.addEventListener('submit', function () {
+  validFirstName(this);
+});
 
-  // Ecoute de la modification du nom
-  form.firstName.addEventListener('change', function () {
-    validFirstName(this);
-  });
+// Ecoute de la modification du prénom
+form.lastName.addEventListener('submit', function () {
+  validLastName(this);
+});
 
-  // Ecoute de la modification du prénom
-  form.lastName.addEventListener('change', function () {
-    validLastName(this);
-  });
+// Ecoute de la modification du prénom
+form.address.addEventListener('submit', function () {
+  validAddress(this);
+});
 
-  // Ecoute de la modification du prénom
-  form.address.addEventListener('change', function () {
-    validAddress(this);
-  });
+// Ecoute de la modification du prénom
+form.city.addEventListener('submit', function () {
+  validCity(this);
+});
 
-  // Ecoute de la modification du prénom
-  form.city.addEventListener('change', function () {
-    validCity(this);
-  });
+// Ecoute de la modification du prénom
+form.email.addEventListener('submit', function () {
+  validEmail(this);
+});
 
-  // Ecoute de la modification du prénom
-  form.email.addEventListener('change', function () {
-    validEmail(this);
-  });
+//validation du prénom
+const validFirstName = function (inputFirstName) {
+  let firstNameErrorMsg = inputFirstName.nextElementSibling;
 
-  //validation du prénom
-  const validFirstName = function (inputFirstName) {
-    let firstNameErrorMsg = inputFirstName.nextElementSibling;
-
-    if (nameCheck.test(inputFirstName.value)) {
-      firstNameErrorMsg.innerHTML = '';
-    } else {
-      firstNameErrorMsg.innerHTML = 'Le champ n est pas valide !';
-    }
-  };
-
-  //validation du nom
-  const validLastName = function (inputLastName) {
-    let lastNameErrorMsg = inputLastName.nextElementSibling;
-
-    if (nameCheck.test(inputLastName.value)) {
-      lastNameErrorMsg.innerHTML = '';
-    } else {
-      lastNameErrorMsg.innerHTML = 'Le champ n est pas valide !';
-    }
-  };
-
-  //validation de l'adresse
-  const validAddress = function (inputAddress) {
-    let addressErrorMsg = inputAddress.nextElementSibling;
-
-    if (addressCheck.test(inputAddress.value)) {
-      addressErrorMsg.innerHTML = '';
-    } else {
-      addressErrorMsg.innerHTML = 'Le champ n est pas valide !';
-    }
-  };
-
-  //validation de la ville
-  const validCity = function (inputCity) {
-    let cityErrorMsg = inputCity.nextElementSibling;
-
-    if (cityCheck.test(inputCity.value)) {
-      cityErrorMsg.innerHTML = '';
-    } else {
-      cityErrorMsg.innerHTML = 'Le champ n est pas valide !';
-    }
-  };
-
-  //validation de l'email
-  const validEmail = function (inputEmail) {
-    let emailErrorMsg = inputEmail.nextElementSibling;
-
-    if (emailCheck.test(inputEmail.value)) {
-      emailErrorMsg.innerHTML = '';
-    } else {
-      emailErrorMsg.innerHTML = 'Le champ n est pas valide !';
-    }
-  };
+  if (nameCheck.test(inputFirstName.value)) {
+    firstNameErrorMsg.innerHTML = '';
+    return true;
+  } else {
+    firstNameErrorMsg.innerHTML = 'Le champ n est pas valide !';
+    return false;
+  }
 };
-formulaireCheck();
 
-function PostApi() {
-  const btn_commander = document.getElementById("order");
+//validation du nom
+const validLastName = function (inputLastName) {
+  let lastNameErrorMsg = inputLastName.nextElementSibling;
 
-  btn_commander.addEventListener('click', (e) => {
-    e.preventDefault();
-
-
-    // le tableau pour les id 
-    let itemId = [];
-    for (let z = 0; z < cart.length; z++) {
-      itemId.push(cart[z].id);
-    }
-    console.log(itemId);
-
-
-    let inputName = document.getElementById("firstName");
-    let inputLastName = document.getElementById("lastName");
-    let inputAdress = document.getElementById("address");
-    let inputCity = document.getElementById("city");
-    let inputMail = document.getElementById("email");
-
-    const order = {
-
-      contact: {
-        firstName: inputName.value,
-        lastName: inputLastName.value,
-        address: inputAdress.value,
-        city: inputCity.value,
-        email: inputMail.value,
-      },
-      products: itemId,
-    }
-
-    const options = {
-      method: 'POST',
-      body: JSON.stringify(order),
-      headers: {
-        'Accept': 'application/json',
-        "Content-Type": "application/json"
-      },
-    };
-
-    fetch("http://localhost:3000/api/products/order", options)
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(data);
-        localStorage.clear();
-        localStorage.setItem("orderId", data.orderId);
-
-        document.location.href = "confirmation.html";
-      });
-
-  }); // fin du addEvent orderBtn
-
+  if (nameCheck.test(inputLastName.value)) {
+    lastNameErrorMsg.innerHTML = '';
+    return true;
+  } else {
+    lastNameErrorMsg.innerHTML = 'Le champ n est pas valide !';
+    return false;
+  }
 };
-PostApi();
+
+//validation de l'adresse
+const validAddress = function (inputAddress) {
+  let addressErrorMsg = inputAddress.nextElementSibling;
+
+  if (addressCheck.test(inputAddress.value)) {
+    addressErrorMsg.innerHTML = '';
+    return true;
+  } else {
+    addressErrorMsg.innerHTML = 'Le champ n est pas valide !';
+    return false;
+  }
+};
+
+//validation de la ville
+const validCity = function (inputCity) {
+  let cityErrorMsg = inputCity.nextElementSibling;
+
+  if (cityCheck.test(inputCity.value)) {
+    cityErrorMsg.innerHTML = '';
+    return true;
+
+  } else {
+    cityErrorMsg.innerHTML = 'Le champ n est pas valide !';
+    return false;
+  }
+};
+
+//validation de l'email
+const validEmail = function (inputEmail) {
+  let emailErrorMsg = inputEmail.nextElementSibling;
+
+  if (emailCheck.test(inputEmail.value)) {
+    emailErrorMsg.innerHTML = '';
+    return true;
+  } else {
+    emailErrorMsg.innerHTML = 'Le champ n est pas valide !';
+    return false;
+  }
+};
+
+
+
+const btn_commander = document.getElementById("order");
+
+btn_commander.addEventListener('click', (e) => {
+  e.preventDefault();
+
+
+  // le tableau pour les id 
+  let itemId = [];
+  for (let z = 0; z < cart.length; z++) {
+    itemId.push(cart[z].id);
+  }
+  console.log(itemId);
+
+
+  let inputName = document.getElementById("firstName");
+  let inputLastName = document.getElementById("lastName");
+  let inputAdress = document.getElementById("address");
+  let inputCity = document.getElementById("city");
+  let inputMail = document.getElementById("email");
+
+  const order = {
+
+    contact: {
+      firstName: inputName.value,
+      lastName: inputLastName.value,
+      address: inputAdress.value,
+      city: inputCity.value,
+      email: inputMail.value,
+    },
+    products: itemId,
+  }
+
+  const options = {
+    method: 'POST',
+    body: JSON.stringify(order),
+    headers: {
+      'Accept': 'application/json',
+      "Content-Type": "application/json"
+    },
+  };
+
+  fetch("http://localhost:3000/api/products/order", options)
+    .then((response) => response.json())
+    .then((data) => {
+      console.log(data);
+      localStorage.clear();
+      localStorage.setItem("orderId", data.orderId);
+
+      document.location.href = "confirmation.html?orderId";
+    });
+
+}); // fin du addEvent orderBtn
+
+
