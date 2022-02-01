@@ -16,8 +16,7 @@ else {
 
   // boucle forEach pour attribuer les différente values 
   cart.forEach((item) => {
-    const { id, price, color, alt, name, quantity, image } = item;
-    const prix = document.querySelector('.cart__item__content__titlePrice');
+    const { id, color, alt, name, quantity, image } = item;
 
     affichage += `
     
@@ -29,7 +28,7 @@ else {
       <div class="cart__item__content__titlePrice">
         <h2>${name}</h2>
         <p>${color}</p>
-        <p>${price} €</p>
+        <p> €</p>
       </div>
       <div class="cart__item__content__settings">
         <div class="cart__item__content__settings__quantity">
@@ -47,6 +46,28 @@ else {
     document.getElementById('cart__items').innerHTML = affichage;
 
 
+
+    fetch("http://localhost:3000/api/products/")
+      .then(response => response.json())
+      .then((response) => {
+        
+
+        cart.forEach((product) => {
+          
+          const data = response;
+          let newId = product.id;
+          let newColor = product.color;
+          const searchTheSame = data.filter(obj => newId === obj._id && newColor === obj.colors );
+          
+          console.log(searchTheSame)
+        })
+
+
+
+      });
+
+
+     
     console.table(cart);
 
     // fonction pour afficher les prix dans le html || servira pour raffraichir les prix ensuite 
@@ -166,27 +187,27 @@ let addressCheck = new RegExp("^[0-9]{1,3}(?:(?:[,. ]){1}[-a-zA-Zàâäéèêë�
 
 
 // Ecoute de la modification du nom
-form.firstName.addEventListener('submit', function () {
+form.firstName.addEventListener('change', function () {
   validFirstName(this);
 });
 
 // Ecoute de la modification du prénom
-form.lastName.addEventListener('submit', function () {
+form.lastName.addEventListener('change', function () {
   validLastName(this);
 });
 
 // Ecoute de la modification du prénom
-form.address.addEventListener('submit', function () {
+form.address.addEventListener('change', function () {
   validAddress(this);
 });
 
 // Ecoute de la modification du prénom
-form.city.addEventListener('submit', function () {
+form.city.addEventListener('change', function () {
   validCity(this);
 });
 
 // Ecoute de la modification du prénom
-form.email.addEventListener('submit', function () {
+form.email.addEventListener('change', function () {
   validEmail(this);
 });
 
