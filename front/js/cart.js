@@ -14,11 +14,21 @@ else {
 
   let affichage = "";
 
-  // boucle forEach pour attribuer les différente values 
-  cart.forEach((item) => {
-    const { id, color, alt, name, quantity, image } = item;
+  fetch("http://localhost:3000/api/products/")
+    .then(response => response.json())
+    .then((response) => {
 
-    affichage += `
+      // boucle forEach pour attribuer les différente values 
+      cart.forEach((product) => {
+
+        const { id, color, alt, name, quantity, image } = product;
+        const data = response;
+        const search = data.filter(el => el._id === id && el.colors === color);
+
+        console.log(search)
+
+
+        affichage += `
     
     <article class="cart__item" data-id="${id}" data-color="${color}">
     <div class="cart__item__img">
@@ -43,132 +53,114 @@ else {
   </article>
     `
 
-    document.getElementById('cart__items').innerHTML = affichage;
+        document.getElementById('cart__items').innerHTML = affichage;
 
 
 
-    fetch("http://localhost:3000/api/products/")
-      .then(response => response.json())
-      .then((response) => {
-        
 
-        cart.forEach((product) => {
-          
-          const data = response;
-          let newId = product.id;
-          let newColor = product.color;
-          const searchTheSame = data.filter(obj => newId === obj._id && newColor === obj.colors );
-          
-          console.log(searchTheSame)
-        })
+      console.table(cart);
 
+      // fonction pour afficher les prix dans le html || servira pour raffraichir les prix ensuite 
+      function updateQuantityPrice() {
 
+        // je récupère les quantités
+        let itemQtt = document.getElementsByClassName('itemQuantity');
+        let pdtLength = itemQtt.length;
 
-      });
+        // j'initialise ma variable pour le total des quantités
+        let totalQtt = 0;
 
+        // je boucle pour savoir le total 
+        for (var q = 0; q < pdtLength; q++) {
+          totalQtt += itemQtt[q].valueAsNumber;
+        };
 
-     
-    console.table(cart);
+        // je transmet le résultat à mon html 
+        let qttDisplay = document.getElementById('totalQuantity');
+        qttDisplay.innerHTML = totalQtt;
+        console.log(totalQtt);
 
-    // fonction pour afficher les prix dans le html || servira pour raffraichir les prix ensuite 
-    function updateQuantityPrice() {
+        // j'initialise ma variable pour le total des prix
+        let totalPrice = 0;
 
-      // je récupère les quantités
-      let itemQtt = document.getElementsByClassName('itemQuantity');
-      let pdtLength = itemQtt.length;
+        // je boucle pour avoir le prix des articles en fonction des quantités 
+        for (let q = 0; q < pdtLength; q++) {
+          totalPrice += (itemQtt[q].valueAsNumber * cart[q].price);
+        };
 
-      // j'initialise ma variable pour le total des quantités
-      let totalQtt = 0;
+        // je transmet le résultat à mon html 
+        let priceDisplay = document.getElementById('totalPrice');
+        let fix = Math.round(totalPrice);
+        priceDisplay.innerHTML = fix;
 
-      // je boucle pour savoir le total 
-      for (var q = 0; q < pdtLength; q++) {
-        totalQtt += itemQtt[q].valueAsNumber;
+        // pour finir je set mon cart (sera surtout utile quand je delete un canapé)
+        localStorage.setItem("cart", JSON.stringify(cart));
+
       };
-
-      // je transmet le résultat à mon html 
-      let qttDisplay = document.getElementById('totalQuantity');
-      qttDisplay.innerHTML = totalQtt;
-      console.log(totalQtt);
-
-      // j'initialise ma variable pour le total des prix
-      let totalPrice = 0;
-
-      // je boucle pour avoir le prix des articles en fonction des quantités 
-      for (let q = 0; q < pdtLength; q++) {
-        totalPrice += (itemQtt[q].valueAsNumber * cart[q].price);
-      };
-
-      // je transmet le résultat à mon html 
-      let priceDisplay = document.getElementById('totalPrice');
-      let fix = Math.round(totalPrice);
-      priceDisplay.innerHTML = fix;
-
-      // pour finir je set mon cart (sera surtout utile quand je delete un canapé)
-      localStorage.setItem("cart", JSON.stringify(cart));
-
-    };
-    updateQuantityPrice();
+      updateQuantityPrice();
 
 
-    // fonction pour supprimer un produit choisi
-    function deleteProduct() {
-      let deleteItem = document.querySelectorAll(".deleteItem");
+      // fonction pour supprimer un produit choisi
+      function deleteProduct() {
+        let deleteItem = document.querySelectorAll(".deleteItem");
 
-      for (let s = 0; s < deleteItem.length; s++) {
-        deleteItem[s].addEventListener("click", (event) => {
-          event.preventDefault();
+        for (let s = 0; s < deleteItem.length; s++) {
+          deleteItem[s].addEventListener("click", (event) => {
+            event.preventDefault();
 
-          let idDelete = cart[s].id;
-          let colorDelete = cart[s].color;
+            let idDelete = cart[s].id;
+            let colorDelete = cart[s].color;
 
-          // méthode filter pour trouver le bonne élément de la boucle 
-          cart = cart.filter(el => el.id !== idDelete || el.color !== colorDelete);
+            // méthode filter pour trouver le bonne élément de la boucle 
+            cart = cart.filter(el => el.id !== idDelete || el.color !== colorDelete);
 
-          // removeChild pour enlever dynamiquement le html de l'article
-          let target = document.getElementById('cart__items');
-          target.childNodes[s];
-          target.removeChild(target.children[s]);
+            // removeChild pour enlever dynamiquement le html de l'article
+            let target = document.getElementById('cart__items');
+            target.childNodes[s];
+            target.removeChild(target.children[s]);
 
-          // update des prix et quantités de façon dynamique 
-          updateQuantityPrice();
-        })
+            // update des prix et quantités de façon dynamique 
+            updateQuantityPrice();
+          })
 
+        }
       }
-    }
-    deleteProduct();
+      deleteProduct();
 
 
-    // fonction pour que l'utilisateur puisse changer la quantité d'un canapé 
-    function qttChange() {
+      // fonction pour que l'utilisateur puisse changer la quantité d'un canapé 
+      function qttChange() {
 
-      let itemqtt = document.querySelectorAll(".itemQuantity");
+        let itemqtt = document.querySelectorAll(".itemQuantity");
 
-      // je boucle la longueur pour chaque quantité 
-      for (let k = 0; k < itemqtt.length; k++) {
-        itemqtt[k].addEventListener("change", (e) => {
-          e.preventDefault();
+        // je boucle la longueur pour chaque quantité 
+        for (let k = 0; k < itemqtt.length; k++) {
+          itemqtt[k].addEventListener("change", (e) => {
+            e.preventDefault();
 
-          //je sélectionner l'élément à modifier 
-          const qttSelect = cart[k].quantity;
-          const qttValue = itemqtt[k].valueAsNumber;
+            //je sélectionner l'élément à modifier 
+            const qttSelect = cart[k].quantity;
+            const qttValue = itemqtt[k].valueAsNumber;
 
-          // je cherche l'élement que je veux avec la méthode find 
-          const qttSearch = cart.find((el) => el.qttValue !== qttSelect);
+            // je cherche l'élement que je veux avec la méthode find 
+            const qttSearch = cart.find((el) => el.qttValue !== qttSelect);
 
-          qttSearch.quantity = qttValue;
-          cart[k].quantity = qttSearch.quantity;
+            qttSearch.quantity = qttValue;
+            cart[k].quantity = qttSearch.quantity;
 
-          // je remplace le panier avec les bonnes valeurs 
-          updateQuantityPrice();
+            // je remplace le panier avec les bonnes valeurs 
+            updateQuantityPrice();
 
-        });
+          });
+        };
+
       };
-
-    };
-    qttChange();
+      qttChange();
 
 
-  });// fin du for each 
+    });// fin du fetch
+
+    });// fin du for each 
 
 
 }; // fin de else 
