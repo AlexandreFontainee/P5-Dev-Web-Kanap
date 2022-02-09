@@ -23,9 +23,11 @@ else {
 
         const { id, color, alt, name, quantity, image } = product;
         const data = response;
-        const search = data.filter(el => el._id === id && el.colors === color);
+        const dataColor = data.colors;
+        const search = data.find(el => el._id === id );
+        const price = search.price;
 
-        console.log(search)
+        console.log(price)
 
 
         affichage += `
@@ -38,7 +40,7 @@ else {
       <div class="cart__item__content__titlePrice">
         <h2>${name}</h2>
         <p>${color}</p>
-        <p> €</p>
+        <p>${price} €</p>
       </div>
       <div class="cart__item__content__settings">
         <div class="cart__item__content__settings__quantity">
@@ -85,7 +87,7 @@ else {
 
         // je boucle pour avoir le prix des articles en fonction des quantités 
         for (let q = 0; q < pdtLength; q++) {
-          totalPrice += (itemQtt[q].valueAsNumber * cart[q].price);
+          totalPrice += (itemQtt[q].valueAsNumber * price);
         };
 
         // je transmet le résultat à mon html 
