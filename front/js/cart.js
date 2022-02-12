@@ -174,10 +174,10 @@ else {
 let form = document.querySelector(".cart__order__form");
 
 // Ajout des Regex
-let emailCheck = new RegExp(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/);
-let nameCheck = new RegExp("^[a-zA-Z ,.'-]+$");
-let cityCheck = new RegExp("^[a-zA-Z]+(?:[\s-][a-zA-Z]+)*$");
-let addressCheck = new RegExp("^[0-9]{1,3}(?:(?:[,. ]){1}[-a-zA-Zàâäéèêëïîôöùûüç]+)+");
+const emailCheck = new RegExp(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/);
+const nameCheck = new RegExp("^[a-zA-Z ,.'-]+$");
+const cityCheck = new RegExp("^[a-zA-Z]+(?:[\s-][a-zA-Z]+)*$");
+const addressCheck = new RegExp("^[0-9]{1,3}(?:(?:[,. ]){1}[-a-zA-Zàâäéèêëïîôöùûüç]+)+");
 
 
 // Ecoute de la modification du nom
@@ -272,16 +272,23 @@ const validEmail = function (inputEmail) {
 };
 
 function checkFinal() {
-  if (validLastName === true && validFirstName === true && validAddress === true && validCity === true && validEmail === true) {
 
+  const btn_commander = document.getElementById("order");
 
+  btn_commander.addEventListener('click', (e) => {
+    e.preventDefault();
 
+    const inputName = document.getElementById("firstName");
+    const inputLastName = document.getElementById("lastName");
+    const inputAdress = document.getElementById("address");
+    const inputCity = document.getElementById("city");
+    const inputMail = document.getElementById("email");
 
-    const btn_commander = document.getElementById("order");
-
-    btn_commander.addEventListener('click', (e) => {
-      e.preventDefault();
-
+    if (validLastName(inputLastName)
+      && validFirstName(inputName)
+      && validAddress(inputAdress)
+      && validCity(inputCity)
+      && validEmail(inputMail)) {
 
       // le tableau pour les id 
       let itemId = [];
@@ -290,12 +297,6 @@ function checkFinal() {
       }
       console.log(itemId);
 
-
-      let inputName = document.getElementById("firstName");
-      let inputLastName = document.getElementById("lastName");
-      let inputAdress = document.getElementById("address");
-      let inputCity = document.getElementById("city");
-      let inputMail = document.getElementById("email");
 
       const order = {
 
@@ -325,11 +326,12 @@ function checkFinal() {
           localStorage.clear();
           localStorage.setItem("orderId", data.orderId);
 
-          document.location.href = "confirmation.html?orderId";
+          document.location.href = `confirmation.html?orderId=${data.orderId}`;
         });
 
-    }); // fin du addEvent orderBtn
+    }// fin du if 
 
-  }
-}
+  }); // fin du addEvent orderBtn
+
+};
 checkFinal();
