@@ -7,7 +7,6 @@ const newUrl = "http://localhost:3000/api/products/" + id;
 
 const colors = document.getElementById("colors");
 const itemQty = document.getElementById("quantity");
-const imageURL ="";
 
 // appel de l'api 
 
@@ -51,7 +50,7 @@ fetch(newUrl)
       event.preventDefault();
 
 
-      let cart = JSON.parse(localStorage.getItem('cart'));
+      const cart = JSON.parse(localStorage.getItem('cart'));
       console.log(cart);
 
       const addItemInLocal = () => {

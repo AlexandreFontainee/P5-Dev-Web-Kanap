@@ -23,7 +23,6 @@ else {
 
         const { id, color, alt, name, quantity, image } = product;
         const data = response;
-        const dataColor = data.colors;
         const search = data.find(el => el._id === id);
         const price = search.price;
 
@@ -173,12 +172,6 @@ else {
 
 let form = document.querySelector(".cart__order__form");
 
-// Ajout des Regex
-const emailCheck = new RegExp(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/);
-const nameCheck = new RegExp("^[a-zA-Z ,.'-]+$");
-const cityCheck = new RegExp("^[a-zA-Z]+(?:[\s-][a-zA-Z]+)*$");
-const addressCheck = new RegExp("^[0-9]{1,3}(?:(?:[,. ]){1}[-a-zA-Zàâäéèêëïîôöùûüç]+)+");
-
 
 // Ecoute de la modification du nom
 form.firstName.addEventListener('change', function () {
@@ -270,6 +263,13 @@ const validEmail = function (inputEmail) {
     return false;
   }
 };
+
+// Ajout des Regex
+const emailCheck = new RegExp(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/);
+const nameCheck = new RegExp("^[a-zA-Z ,.'-]+$");
+const cityCheck = new RegExp("^[a-zA-Z]+(?:[\s-][a-zA-Z]+)*$");
+const addressCheck = new RegExp("^[0-9]{1,3}(?:(?:[,. ]){1}[-a-zA-Zàâäéèêëïîôöùûüç]+)+");
+
 
 function checkFinal() {
 

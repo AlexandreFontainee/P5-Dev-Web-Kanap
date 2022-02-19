@@ -12,14 +12,14 @@ fetch(`http://localhost:3000/api/products/`)
 
     // boucle pour avoir les éléments du tableau 
     codeItem.forEach((item )=> {
-      const { _id, imageUrl, name, description} = item;
+      const { _id, imageUrl, name, description, alt} = item;
    
-
+      // on attribue chaque valeur au html
       affichage += `
 
         <a href="./product.html?id=${_id}">
             <article>
-              <img src="${imageUrl}" alt="Lorem ipsum dolor sit amet, Kanap name1">
+              <img src="${imageUrl}" alt="${alt}">
               <h3 class="productName">${name}</h3>
               <p class="productDescription">${description}</p>
             </article>
